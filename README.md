@@ -18,14 +18,14 @@ By doing so, it helps researchers understand which quantum techniques provide me
 
 ## Main Features
 
-✅ Classical RL baselines using adapted versions of PPO and DQN (from CleanRL)
-✅ Hybrid quantum-classical agents built on PennyLane
-✅ Modular quantum layer builders (basic, Hsiao, Skolik circuits)
-✅ Support for advanced techniques like **Data Reuploading** and **Output Reuse**
-✅ Flexible embedding options (angle, multi-angle, amplitude, basis)
-✅ Classical preprocessing transformations for observations (e.g., normalization, arctangent scaling)
-✅ Logging, saving, and loading of agents for reproducible experiments
-✅ Idealized quantum simulations using the "lightning.qubit" device (no hardware noise)
+✅ Classical RL baselines using adapted versions of PPO and DQN (from CleanRL)  
+✅ Hybrid quantum-classical agents built on PennyLane  
+✅ Modular quantum layer builders (basic, Hsiao, Skolik circuits)  
+✅ Support for advanced techniques like **Data Reuploading** and **Output Reuse**  
+✅ Flexible embedding options (angle, multi-angle, amplitude, basis)  
+✅ Classical preprocessing transformations for observations (e.g., normalization, arctangent scaling)  
+✅ Logging, saving, and loading of agents for reproducible experiments  
+✅ Idealized quantum simulations using the "lightning.qubit" device (no hardware noise)  
 
 ## How It Works
 
