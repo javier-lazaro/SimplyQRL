@@ -1,10 +1,14 @@
 # SimplyQRL
 
-**License:** MIT License
+*A simple Quantum Reinforcement Learning library*
 
 ## Overview
 
-SimplyQRL is a Python library designed to support research and experimentation in **Quantum Reinforcement Learning (QRL)**, with a special focus on **hybrid quantum-classical agents** based on Parameterized Quantum Circuits (PQCs). It provides a modular and extensible framework for comparing classical deep reinforcement learning agents with quantum-enhanced counterparts under standardized conditions.
+SimplyQRL is a Python library designed to support research and experimentation in **Quantum Reinforcement Learning (QRL)**, with a special focus on **hybrid quantum-classical agents** based on Parameterized Quantum Circuits (PQCs).  
+
+It integrates seamlessly with **Gymnasium** environments, ensuring compatibility with widely used reinforcement learning benchmarks. The quantum components are implemented using **PennyLane**, a leading Python library for differentiable quantum programming, enabling efficient simulation and optimization of quantum circuits alongside classical machine learning tools.  
+
+SimplyQRL provides a modular and extensible framework for comparing classical deep reinforcement learning agents with quantum-enhanced counterparts under standardized and controlled conditions.
 
 ## Purpose
 
@@ -25,7 +29,7 @@ By doing so, it helps researchers understand which quantum techniques provide me
 ✅ Flexible embedding options (angle, multi-angle, amplitude, basis)  
 ✅ Classical preprocessing transformations for observations (e.g., normalization, arctangent scaling)  
 ✅ Logging, saving, and loading of agents for reproducible experiments  
-✅ Idealized quantum simulations using the "lightning.qubit" device (no hardware noise)  
+✅ Idealized quantum simulations using the "lightning.qubit" device (no hardware noise)
 
 ## How It Works
 
@@ -34,7 +38,7 @@ SimplyQRL integrates into reinforcement learning pipelines by replacing classica
 * **Classical agents** use standard multilayer perceptrons (MLPs) as actor-critic or Q-networks.
 * **Hybrid agents** swap in PQCs, where classical data is embedded onto quantum states, processed through parameterized layers, and measured to produce outputs.
 
-The library builds on CleanRL's robust algorithm implementations, ensuring that comparisons between classical and quantum agents are fair and systematic.
+The library builds on CleanRL's robust algorithm implementations and relies on **Gymnasium** environments for interaction, ensuring that comparisons between classical and quantum agents are fair, systematic, and compatible with common RL benchmarks.
 
 ## Supported Algorithms
 
@@ -53,13 +57,13 @@ The library builds on CleanRL's robust algorithm implementations, ensuring that 
 
 ## Project Status
 
-The final release of SimplyQRL is **work in progress**. If you are interested, you can request access to a **pre-release version** by contacting the project maintainer.
+The final release of SimplyQRL is **work in progress**. If you are interested, you can request access to a **pre-release version** by opening an Issue on this repository or reaching out via the public email listed in the maintainer's GitHub profile.
 
 **Estimated release date for the initial public version:** Q4 2025.
 
 ## Intended Use
 
-This library is intended **for research and educational purposes only**. It is a prototyping tool for testing ideas in QRL, not an industrial-strength framework. Current implementations assume idealized quantum simulators and do not account for noise or hardware-specific constraints.
+This library is intended **for research and educational purposes only**. It is a prototyping tool for testing ideas in QRL, not an industrial-strength framework. Current implementations assume idealized quantum simulators (using PennyLane's `"lightning.qubit"` device) and do not account for noise or hardware-specific constraints.
 
 ## License
 
