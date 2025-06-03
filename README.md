@@ -83,3 +83,8 @@ If you use SimplyQRL in your research, please cite it as:
 ## Contact
 
 For questions, collaborations, or to request a pre-release version, please open an Issue on this repository or reach out via the public email listed in the maintainer's GitHub profile.
+
+## Acknowledgments
+
+This project draws conceptual inspiration and design patterns from the excellent open-source libraries [CleanRL](https://github.com/vwxyzjn/cleanrl) and [Stable Baselines3](https://github.com/DLR-RM/stable-baselines3). Their contributions to the reinforcement learning community have been invaluable in shaping this work.
+
