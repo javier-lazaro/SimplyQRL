@@ -12,9 +12,12 @@ from tqdm import tqdm
 import torch.nn.functional as F
 from torch.utils.tensorboard import SummaryWriter
 
-from .agents import build_agent
-from .buffers import ReplayBuffer, ReplayBufferSamples
+import json, tempfile, shutil, zipfile, cloudpickle
+from io import BytesIO
 
+from .agents import build_agent
+from .envs import make_vec_env
+from .buffers import ReplayBuffer
 
 def make_env(env_id, seed, idx, capture_video=False, run_name="experiment"):
     def thunk():
@@ -77,12 +80,12 @@ class DQN():
             verbose=False
         ):
 
-
-        # Static (hard-coded) hyperparameters and settings
-        self.env_id = env_id
+        #self.env_id = env_id
+        self.env = env
         self.seed = seed
         self.run_name = run_name
-        self.capture_video = capture_video
+        self.agent_type   = agent_type
+        self.agent_config = agent_config
         self.verbose = verbose
 
         # DQN hyperparameters
@@ -108,39 +111,12 @@ class DQN():
         torch.manual_seed(self.seed)
         torch.backends.cudnn.deterministic = self.torch_deterministic
 
-        # Device
-        self.device = torch.device(
-            "cuda" if torch.cuda.is_available() and self.cuda else "cpu"
-        )
-
         # Create environment (1 env) - Multiple enviroments are not supported
-
-        env_fns = []
-
-        if env is not None:
-            env.reset(seed=seed)
-            # Vectorize deep‐copies of the provided env
-            for idx in range(1):
-                def thunk(base_env=env, idx=idx):
-                    env_copy = copy.deepcopy(base_env)
-                    env_copy = gym.wrappers.RecordEpisodeStatistics(env_copy)
-                    env_copy.reset(seed=seed) #opt + idx
-                    return env_copy
-                env_fns.append(thunk)
-
-        elif env_id is not None:
-            # Use existing make_env helper (assumed to wrap stats & reset seed)
-            for idx in range(1):
-                env_fns.append(make_env(env_id, seed, idx))
-
-        # Create a SyncVectorEnv from all thunks
-        self.envs = gym.vector.SyncVectorEnv(env_fns)
-
-        """
-        self.envs = gym.vector.SyncVectorEnv(
-            [make_env(self.env_id, self.seed + i, i, self.capture_video, self.run_name) for i in range(1)]
+        self.envs = make_vec_env(
+            base = env if env is not None else env_id,
+            num_envs = 1,
+            seed = seed,
         )
-        """
 
         assert isinstance(
             self.envs.single_action_space, gym.spaces.Discrete
@@ -150,8 +126,8 @@ class DQN():
         obs_shape = self.envs.single_observation_space.shape
         n_actions = self.envs.single_action_space.n
 
-        self.q_network = build_agent(agent_type, obs_shape, n_actions, config=agent_config, is_qnet=True) 
-        self.target_network = build_agent(agent_type, obs_shape, n_actions, config=agent_config, is_qnet=True) 
+        self.q_network = build_agent(self.agent_type, obs_shape, n_actions, config=self.agent_config, is_qnet=True) 
+        self.target_network = build_agent(self.agent_type, obs_shape, n_actions, config=self.agent_config, is_qnet=True) 
 
         self.q_network.to(self.device)
         self.target_network.to(self.device)
@@ -183,6 +159,11 @@ class DQN():
 
         # Initialize first observation
         self.obs, _ = self.envs.reset(seed=self.seed)
+
+    @property
+    def device(self):
+        #TODO - Dynamic asignment of cpu/gpu
+        return torch.device("cpu") #torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     def train(self, total_timesteps=10_000, progress_bar=False):
         self.total_timesteps = total_timesteps
@@ -305,6 +286,113 @@ class DQN():
         self.envs.close()
         self.writer.close()
         print("Training finished!")
+
+
+    def _export_hparams(self):
+        return dict(
+            #env_id=self.env_id,
+            seed=self.seed,
+            agent_type=self.agent_type,
+            learning_rate=self.learning_rate,
+            buffer_size=self.buffer_size,
+            gamma=self.gamma,
+            tau=self.tau,
+            target_network_frequency=self.target_network_frequency,
+            batch_size=self.batch_size,
+            start_e=self.start_e,
+            end_e=self.end_e,
+            exploration_fraction=self.exploration_fraction,
+            learning_starts=self.learning_starts,
+            train_frequency=self.train_frequency,
+        )
+
+    # ------------------------------------------------------------------
+    # Persistence: safe ZIP archive + fallback pickle
+    # ------------------------------------------------------------------
+    def save(self, file_path: str, *, metadata: dict | None = None):
+
+        tmp_dir = tempfile.mkdtemp()
+        # 1) save networks and optimizer state
+        torch.save(self.q_network.state_dict(), f"{tmp_dir}/q_network.pth")
+        torch.save(self.optimizer.state_dict(), f"{tmp_dir}/optim.pth")
+
+        # 2) serialize agent_config (JSON when possible, otherwise pickle)
+        try:
+            json.dumps(self.agent_config)
+            with open(f"{tmp_dir}/agent_cfg.json", "w") as fcfg:
+                json.dump(self.agent_config, fcfg)
+            cfg_fmt = "json"
+        except TypeError:
+            with open(f"{tmp_dir}/agent_cfg.pkl", "wb") as fcfg:
+                cloudpickle.dump(self.agent_config, fcfg)
+            cfg_fmt = "pkl"
+
+        # 3) save metadata (hyperparameters + config format + any extra metadata)
+        meta = {
+            "hparams":    self._export_hparams(),
+            "cfg_format": cfg_fmt,
+            **(metadata or {}),
+        }
+        with open(f"{tmp_dir}/meta.json", "w") as f:
+            json.dump(meta, f)
+
+        # package into ZIP and remove temporary folder
+        shutil.make_archive(file_path, "zip", tmp_dir)
+        shutil.rmtree(tmp_dir)
+        print(f"Saved checkpoint: {file_path}.zip")
+
+    @classmethod
+    def load(cls, file_path: str, env=None, device: str = "cpu", allow_pickle: bool = False):
+
+        if not file_path.endswith(".zip"):
+            file_path += ".zip"
+
+        with zipfile.ZipFile(file_path, "r") as zf:
+            meta    = json.loads(zf.read("meta.json"))
+            hparams = meta["hparams"].copy()
+
+            # load agent_config before instantiating the object
+            fmt = meta.get("cfg_format", "json")
+            if fmt == "json":
+                cfg = json.loads(zf.read("agent_cfg.json"))
+            else:
+                if not allow_pickle:
+                    raise RuntimeError(
+                        "Checkpoint uses pickle for agent_config; pass allow_pickle=True to load it."
+                    )
+                cfg = cloudpickle.loads(zf.read("agent_cfg.pkl"))
+
+            # rebuild DQN with the same hyperparameters and config
+            kwargs = dict(
+                env          = env,
+                run_name     = "DQN-loaded",
+                agent_config = cfg,
+                **hparams,
+            )
+            obj = cls(**kwargs)
+
+            # load network weights and optimizer state
+            obj.q_network.load_state_dict(
+                torch.load(BytesIO(zf.read("q_network.pth")), map_location=device)
+            )
+            obj.optimizer.load_state_dict(
+                torch.load(BytesIO(zf.read("optim.pth")), map_location=device)
+            )
+            # synchronize target network
+            obj.target_network.load_state_dict(obj.q_network.state_dict())
+
+        print(f"Loaded checkpoint: {file_path}")
+        return obj
+
+    # unsafe full-object pickle (use with caution)
+    def save_full(self, path: str):
+        torch.save(self.__dict__, path, _use_new_zipfile_serialization=False)
+        print(f"Full-pickle checkpoint written to {path} (trusted use only)")
+
+    @classmethod
+    def load_full(cls, path: str, **kw):
+        return torch.load(path, **kw)
+
 
     def close(self):
         """Close the environments and writer."""
