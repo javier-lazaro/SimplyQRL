@@ -11,7 +11,6 @@ import torch.optim as optim
 from io import BytesIO
 from tqdm import tqdm
 from torch.utils.tensorboard import SummaryWriter
-from torch.distributions.categorical import Categorical
 
 from .agents import build_agent
 from .envs import make_vec_env
@@ -110,29 +109,6 @@ class PPO:
             seed = seed,
         )
 
-        """
-        env_fns = []
-
-        if env is not None:
-            env.reset(seed=seed)
-            # Vectorize deep‐copies of the provided env
-            for idx in range(num_envs):
-                def thunk(base_env=env, idx=idx):
-                    env_copy = copy.deepcopy(base_env)
-                    env_copy = gym.wrappers.RecordEpisodeStatistics(env_copy)
-                    env_copy.reset(seed=seed) #opt + idx
-                    return env_copy
-                env_fns.append(thunk)
-
-        elif env_id is not None:
-            # Use existing make_env helper (assumed to wrap stats & reset seed)
-            for idx in range(num_envs):
-                env_fns.append(make_env(env_id, seed, idx))
-
-        # Create a SyncVectorEnv from all thunks
-        self.envs = gym.vector.SyncVectorEnv(env_fns)
-        """
-
         assert isinstance(
             self.envs.single_action_space, gym.spaces.Discrete
         ), "only discrete action spaces supported"
@@ -148,10 +124,6 @@ class PPO:
 
         # Create optimizer
         self.optimizer = optim.Adam(self.agent.parameters(), lr=self.learning_rate, eps=1e-5)
-
-        # Create buffers for rollouts
-        #self.obs = torch.zeros((self.num_steps, self.num_envs) + obs_shape).to(self.device)
-        #self.actions = torch.zeros((self.num_steps, self.num_envs)).to(self.device)
 
         # Create buffers for rollouts (flattened obs)
         self.obs    = torch.zeros(self.num_steps, self.num_envs, obs_dim).to(self.device)
@@ -176,7 +148,8 @@ class PPO:
 
     @property
     def device(self):
-        return torch.device("cpu") #torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        #TODO - Dynamic asignment of cpu/gpu
+        return torch.device("cpu") #torch.device("cuda" if torch.cuda.is_available() else "cpu") 
 
     def train(self, total_timesteps: int = 100_000, progress_bar: bool = False):
         """Main PPO training loop."""
