@@ -132,7 +132,7 @@ if __name__ == "__main__":
     evaluate_agent(ppo_loaded, num_episodes=10, record_video=False)
 
     # Evaluating the agent (Video + stats) --> See additional dependancies at the top for this to work
-    #evaluate_agent(ppo_loaded, num_episodes=10, record_video=True, video_path="videos/ppo_cart_sk.mp4", fps=10, resize_factor=4)
+    #evaluate_agent(ppo_loaded, num_episodes=10, record_video=True, video_path="videos/ppo_cart_sk.mp4", fps=24, resize_factor=4)
 
     ppo_loaded.close()
 
@@ -169,6 +169,6 @@ if __name__ == "__main__":
     evaluate_agent(ppo_loaded, num_episodes=10, record_video=False)
 
     # Evaluating the agent (Video + stats) --> See additional dependancies at the top for this to work
-    #evaluate_agent(ppo_loaded, num_episodes=20, record_video=True, video_path="videos/ppo_cat_hs.mp4", fps=10, resize_factor=4)
+    #evaluate_agent(ppo_loaded, num_episodes=20, record_video=True, video_path="videos/ppo_cart_hs.mp4", fps=24, resize_factor=4)
 
     ppo_loaded.close()
