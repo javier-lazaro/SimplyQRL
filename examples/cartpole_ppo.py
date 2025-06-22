@@ -32,15 +32,19 @@ def evaluate_agent(
         mean_return (float): Average episodic reward over *num_episodes*.
     """
 
+    returns: list[float] = [] # Initialise returns list
+
     # 1. Fresh enviroment - with render env (rgb_array) for recording if needed
     if record_video:
         env = gym.make("CartPole-v1", render_mode="rgb_array")
 
         os.makedirs(os.path.dirname(video_path), exist_ok=True)
         frames: list[np.ndarray] = []
-        returns: list[float] = []
     else:
         env = gym.make("CartPole-v1")
+
+    
+    print(f"\nCommencing evaluation of the trained agent in the CartPole-v1 enviroment:\n")
 
     # 2. Evaluation loop
     agent = trained_agent.agent
@@ -49,7 +53,7 @@ def evaluate_agent(
         done = False
         ep_ret = 0.0
         while not done:
-            obs_tensor = torch.tensor([[float(obs)]], dtype=torch.float32)
+            obs_tensor = torch.from_numpy(np.asarray(obs, dtype=np.float32)).unsqueeze(0) 
             with torch.no_grad():
                 action_tensor, _, _, _ = agent.get_action_and_value(obs_tensor)
             action = int(action_tensor.item())
@@ -87,6 +91,7 @@ if __name__ == "__main__":
 
     # In this example we present the training and evaluation of a Hybrid agent to solve the CartPole-v1 enviroment 
     # The resolution process followed in this example can be replicated for other versions of CartPole
+    
 
     # ENVIROMENT CREATION
     env = gym.make("CartPole-v1")
@@ -102,7 +107,8 @@ if __name__ == "__main__":
     }
 
     ## EXPERIMENT 1: SOLVING THE ENV USING SKOLIK ET AL. + DATA REUPLOADING -- COMMENT THIS BLOCK IF YOU JUST WANT TO EVALUATE THE RESULT ## 
-    
+
+
     # Algorithm setup
     seed = 1                    # Seed for reproducibility                   
     run_name = "PPO_Cart_sk"    # Name used for logs
@@ -114,7 +120,6 @@ if __name__ == "__main__":
     ppo.save("checkpoints/PPO/CP_hybrid_sk")                # Saving the trained agent
     ppo.close()  
 
-    
 
     ## EVAUATING THE AGENT -- COMMENT THIS BLOCK IF YOU JUST WANT TO TRAIN IT ##
 
@@ -124,12 +129,15 @@ if __name__ == "__main__":
     ppo_loaded.agent.get_agent_info(env)
 
     # Evaluating the agent (No video, just stats)
-    #evaluate_agent(ppo_loaded, num_episodes=10, record_video=False)
+    evaluate_agent(ppo_loaded, num_episodes=10, record_video=False)
 
     # Evaluating the agent (Video + stats) --> See additional dependancies at the top for this to work
     #evaluate_agent(ppo_loaded, num_episodes=10, record_video=True, video_path="videos/ppo_cart_sk.mp4", fps=10, resize_factor=4)
-    """
+
+    ppo_loaded.close()
+
     
+
     # HYBRID AGENT CONFIGURATION - HSIAO + OR
     config_hybrid = {
         "circ_type": "hsiao",                                   # Uses the Hsiao et al. PQC architecture for the quantum layer
@@ -162,4 +170,5 @@ if __name__ == "__main__":
 
     # Evaluating the agent (Video + stats) --> See additional dependancies at the top for this to work
     #evaluate_agent(ppo_loaded, num_episodes=20, record_video=True, video_path="videos/ppo_cat_hs.mp4", fps=10, resize_factor=4)
-    """
+
+    ppo_loaded.close()
