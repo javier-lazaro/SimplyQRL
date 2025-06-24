@@ -18,7 +18,7 @@ def evaluate_agent(
     fps: int = 10,
     resize_factor: int | None = None,
 ):
-    """Evaluate a single PPO agent on FrozenLake and record the rollouts in a single compiled video.
+    """Evaluate a single PPO agent on CartPole and record the rollouts in a single compiled video.
 
     Args:
         num_episodes: How many episodes to run.
@@ -116,7 +116,7 @@ if __name__ == "__main__":
     ppo.agent.get_agent_info(env)  # Shows the full information of the agent
 
     # Training and saving the agent
-    ppo.train(total_timesteps=1_000, progress_bar=True)   # Main training loop
+    ppo.train(total_timesteps=100_000, progress_bar=True)   # Main training loop
     ppo.save("checkpoints/PPO/CP_hybrid_sk")                # Saving the trained agent
     ppo.close()  
 
