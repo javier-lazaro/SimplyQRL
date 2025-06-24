@@ -56,6 +56,64 @@ The library builds on CleanRL's robust algorithm implementations and relies on *
 * `embeddings.py`: Contains data embedding methods.
 * `transformations.py`: Defines preprocessing transforms for observation data.
 
+## Installing and Developing with Poetry
+
+This project uses [Poetry](https://python-poetry.org/docs/) for dependency and environment management. Please follow the official installation guide before proceeding.
+
+Once Poetry is installed, you can set up the development environment as follows:
+
+```bash
+# Clone the repository
+git clone https://github.com/javier-lazaro/SimplyQRL.git
+cd SimplyQRL
+
+# Install dependencies and create a virtual environment
+poetry install
+
+# Activate the virtual environment
+poetry shell
+```
+
+You are now ready to use the library and explore the example scripts in the `examples/` folder.
+
+### Optional Installation Modes
+
+#### 🧪 &nbsp; Editable Mode (for development)
+
+To install the library in editable mode, allowing local changes to be immediately reflected without reinstalling:
+
+```bash
+poetry install --editable .
+```
+
+Useful when developing or testing `simplyqrl` from source.
+
+#### 📼 &nbsp; Video Recording Support
+
+To enable video recording during agent evaluation, install optional video-related dependencies:
+
+```bash
+poetry install --extras "video"
+```
+
+This will install:
+
+- `imageio`: for saving MP4 videos from rendered frames
+- `Pillow`: for optional resizing of frames before writing
+
+> These are only required when using `record_video=True` in evaluation scripts.  
+> All examples handle their absence gracefully when video output is not needed.
+
+### Running Example Scripts
+
+All example scripts are located in the `examples/` folder. You can run them directly with:
+
+```
+poetry run python examples/cartpole_dqn.py
+```
+
+Make sure to use `poetry run` or activate the Poetry shell beforehand.
+
 ## Project Status
 
 The final release of SimplyQRL is **work in progress**. If you are interested, you can request access to a **pre-release version** by opening an Issue on this repository or reaching out via the public email listed in the maintainer's GitHub profile.
