@@ -78,7 +78,7 @@ You are now ready to use the library and explore the example scripts in the `exa
 
 ### Optional Installation Modes
 
-#### 🧪 Editable Mode (for development)
+#### 🧪 &nbsp; Editable Mode (for development)
 
 To install the library in editable mode, allowing local changes to be immediately reflected without reinstalling:
 
@@ -88,7 +88,7 @@ poetry install --editable .
 
 Useful when developing or testing `simplyqrl` from source.
 
-#### 📼 Video Recording Support
+#### 📼 &nbsp; Video Recording Support
 
 To enable video recording during agent evaluation, install optional video-related dependencies:
 
