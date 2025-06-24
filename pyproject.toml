@@ -3,7 +3,7 @@ name = "simplyqrl"
 version = "0.1.0"
 description = "A benchmarking library for hybrid QRL agents"
 authors = [
-    {name = "Javier Lázaro",email = "javilazaro99@gmail.com"}
+    {name = "Javier Lázaro", email = "javilazaro99@gmail.com"}
 ]
 readme = "README.md"
 license = "MIT"
@@ -13,12 +13,18 @@ dependencies = [
     "pennylane (>=0.41.1,<0.42.0)",
     "tqdm (>=4.67.1,<5.0.0)",
     "tensorboard (>=2.19.0,<3.0.0)",
-    "torch (>=2.6.0,<3.0.0)",
+    "torch (>=2.6.0,<3.0.0)"
+]
+
+# Optional dependencies for video recording
+[project.optional-dependencies]
+video = [
+    "imageio>=2.34,<3.0.0",
+    "Pillow>=10.3,<11.0.0"
 ]
 
 [tool.poetry]
 packages = [{include = "simplyqrl", from = "src"}]
-
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
