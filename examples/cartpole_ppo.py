@@ -24,8 +24,7 @@ def evaluate_agent(
         num_episodes: How many episodes to run.
         video_path: Destination MP4 (episodes concatenated).
         fps: Frames per second of the output video.
-        resize_factor: If given, each captured 256x256 frame is up-scaled by this
-            integer factor (using *nearest-neighbour* to keep the crisp grid look).
+        resize_factor: If given, each captured 256x256 frame is up-scaled by this integer factor (using *nearest-neighbour*). \n
             E.g. 'resize_factor=4' => 1024x1024 video.
 
     Returns:
