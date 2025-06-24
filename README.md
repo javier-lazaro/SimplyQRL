@@ -76,15 +76,33 @@ poetry shell
 
 You are now ready to use the library and explore the example scripts in the `examples/` folder.
 
-### Editable Mode (Optional)
+### Optional Installation Modes
 
-To install the library in editable mode for development purposes:
+#### 🧪 Editable Mode (for development)
 
-```
+To install the library in editable mode, allowing local changes to be immediately reflected without reinstalling:
+
+```bash
 poetry install --editable .
 ```
 
-This allows you to import and test `simplyqrl` from other projects while modifying the source code locally.
+Useful when developing or testing `simplyqrl` from source.
+
+#### 📼 Video Recording Support
+
+To enable video recording during agent evaluation, install optional video-related dependencies:
+
+```bash
+poetry install --extras "video"
+```
+
+This will install:
+
+- `imageio`: for saving MP4 videos from rendered frames
+- `Pillow`: for optional resizing of frames before writing
+
+> These are only required when using `record_video=True` in evaluation scripts.  
+> All examples handle their absence gracefully when video output is not needed.
 
 ### Running Example Scripts
 
