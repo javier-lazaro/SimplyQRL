@@ -56,6 +56,46 @@ The library builds on CleanRL's robust algorithm implementations and relies on *
 * `embeddings.py`: Contains data embedding methods.
 * `transformations.py`: Defines preprocessing transforms for observation data.
 
+## Installing and Developing with Poetry
+
+This project uses [Poetry](https://python-poetry.org/docs/) for dependency and environment management. Please follow the official installation guide before proceeding.
+
+Once Poetry is installed, you can set up the development environment as follows:
+
+```bash
+# Clone the repository
+git clone https://github.com/javier-lazaro/SimplyQRL.git
+cd SimplyQRL
+
+# Install dependencies and create a virtual environment
+poetry install
+
+# Activate the virtual environment
+poetry shell
+```
+
+You are now ready to use the library and explore the example scripts in the `examples/` folder.
+
+### Editable Mode (Optional)
+
+To install the library in editable mode for development purposes:
+
+```
+poetry install --editable .
+```
+
+This allows you to import and test `simplyqrl` from other projects while modifying the source code locally.
+
+### Running Example Scripts
+
+All example scripts are located in the `examples/` folder. You can run them directly with:
+
+```
+poetry run python examples/cartpole_dqn.py
+```
+
+Make sure to use `poetry run` or activate the Poetry shell beforehand.
+
 ## Project Status
 
 The final release of SimplyQRL is **work in progress**. If you are interested, you can request access to a **pre-release version** by opening an Issue on this repository or reaching out via the public email listed in the maintainer's GitHub profile.
