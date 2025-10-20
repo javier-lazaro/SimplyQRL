@@ -1,5 +1,5 @@
 # SimplyQRL
-![Project Status: Work in Progress](https://img.shields.io/badge/status-work%20in%20progress-yellow)
+![Project Status: Final Release](https://img.shields.io/badge/status-final%20release-green)
 
 *A simple Quantum Reinforcement Learning library*
 
@@ -116,9 +116,11 @@ Make sure to use `poetry run` or activate the Poetry shell beforehand.
 
 ## Project Status
 
-The final release of SimplyQRL is **work in progress**. If you are interested, you can request access to a **pre-release version** by opening an Issue on this repository or reaching out via the public email listed in the maintainer's GitHub profile.
+This repository corresponds to the **final release** of the original SimplyQRL implementation (v1.0). 
 
-**Estimated release date for the initial public version:** Q4 2025.
+While active development on this codebase has concluded, the **research and conceptual evolution of SimplyQRL continues** and will be published as a **separate project** in the future, reflecting the library’s expanded scope and architecture.
+
+This repository will therefore remain **frozen in its current form** to preserve reproducibility of the results presented in *HAIS 2025*, but **external contributions, forks, and issue discussions are still welcome**.
 
 ## Intended Use
 
@@ -130,16 +132,23 @@ This project is licensed under the **MIT License**. You are free to use, modify,
 
 ## Citation
 
+SimplyQRL was presented at the **20th International Conference on Hybrid Artificial Intelligence Systems (HAIS 2025)**. 
+
 If you use SimplyQRL in your research, please cite it as:
 
 ```bibtex
-@misc{Lazaro2025SimplyQRL,
-  author       = {L{\'a}zaro, Javier},
-  title        = {SimplyQRL: A Python Library for Hybrid Quantum-Classical Reinforcement Learning},
-  year         = {2025},
-  url          = {https://github.com/javier-lazaro/SimplyQRL},
-  urldate      = {2025-06-03},
-  note         = {GitHub repository},
+@inbook{
+  author    = {Lazaro, Javier and Vazquez, Juan-Ignacio and Garc{\'i}a Bringas, Pablo},
+  title     = {SimplyQRL: A Modular Benchmarking Library for Hybrid Quantum Reinforcement Learning},
+  booktitle = {Hybrid Artificial Intelligent Systems},
+  publisher = {Springer Nature Switzerland},
+  year      = {2025},
+  month     = {oct},
+  pages     = {239--250},
+  ISBN      = {9783032084620},
+  ISSN      = {1611-3349},
+  DOI       = {10.1007/978-3-032-08462-0_19},
+  url       = {https://doi.org/10.1007/978-3-032-08462-0_19}
 }
 ```
 
