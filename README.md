@@ -160,3 +160,7 @@ For questions, collaborations, or to request a pre-release version, please open 
 
 This project draws conceptual inspiration and design patterns from the excellent open-source libraries [CleanRL](https://github.com/vwxyzjn/cleanrl) and [Stable Baselines3](https://github.com/DLR-RM/stable-baselines3). Their contributions to the reinforcement learning community have been invaluable in shaping this work.
 
+---
+
+**License:** MIT © 2025 Javier Lázaro González
+
