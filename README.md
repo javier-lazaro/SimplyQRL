@@ -1,4 +1,5 @@
 # SimplyQRL
+[![Paper](https://img.shields.io/badge/Paper-link-blue)](https://link.springer.com/chapter/10.1007/978-3-032-08462-0_19)
 ![Project Status: Final Release](https://img.shields.io/badge/status-final%20release-green)
 
 *A simple Quantum Reinforcement Learning library*
